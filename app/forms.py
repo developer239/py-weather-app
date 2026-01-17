@@ -4,11 +4,10 @@ from typing import Any
 
 from flask import g
 from flask_wtf import FlaskForm
-from sqlmodel import Session, select
 from wtforms import SelectField
 from wtforms.validators import DataRequired, ValidationError
 
-from app.models import City
+from app.services.repository import Repository
 
 
 class CityValidator:
@@ -19,8 +18,8 @@ class CityValidator:
 
     def __call__(self, form: FlaskForm, field: SelectField) -> None:
         """Validate that selected city is in the database."""
-        session: Session = g.db_session
-        city = session.exec(select(City).where(City.name == field.data)).first()
+        repository: Repository = g.repository
+        city = repository.get_city_by_name(field.data)
         if not city:
             raise ValidationError(self.message)
 
@@ -38,6 +37,6 @@ class CityForm(FlaskForm):  # type: ignore[misc]
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         super().__init__(*args, **kwargs)
-        session: Session = g.db_session
-        cities = session.exec(select(City).order_by(City.name)).all()
+        repository: Repository = g.repository
+        cities = repository.get_all_cities()
         self.city.choices = [(c.name, c.name) for c in cities]

@@ -1,10 +1,10 @@
 """Open-Meteo API client for weather data."""
 
 import httpx
-from sqlmodel import Session, select
 
 from app.config import Settings
-from app.models import WeatherCode, WeatherData
+from app.models import WeatherData
+from app.services.repository import Repository
 
 
 class WeatherAPIError(Exception):
@@ -16,17 +16,10 @@ class WeatherAPIError(Exception):
 class WeatherService:
     """Service for fetching weather data from Open-Meteo API."""
 
-    def __init__(self, settings: Settings, session: Session) -> None:
+    def __init__(self, settings: Settings, repository: Repository) -> None:
         self.base_url = settings.weather_api_url
         self.timeout = settings.weather_api_timeout
-        self.session = session
-
-    def _get_weather_description(self, code: int) -> str:
-        """Look up weather code description from database."""
-        weather_code = self.session.exec(
-            select(WeatherCode).where(WeatherCode.code == code)
-        ).first()
-        return weather_code.description if weather_code else "Unknown"
+        self.repository = repository
 
     def get_current_weather(self, latitude: float, longitude: float) -> WeatherData:
         """
@@ -67,7 +60,7 @@ class WeatherService:
                 winddirection=current["winddirection"],
                 weathercode=weathercode,
                 time=current["time"],
-                description=self._get_weather_description(weathercode),
+                description=self.repository.get_weather_description(weathercode),
             )
 
         except httpx.HTTPStatusError as e:

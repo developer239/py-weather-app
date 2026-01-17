@@ -5,7 +5,7 @@ from sqlmodel import Session
 
 from app.config import Settings
 from app.database import get_engine
-from app.services import WeatherService
+from app.services import Repository, WeatherService
 
 
 def init_services_middleware(app: Flask, settings: Settings) -> None:
@@ -16,7 +16,8 @@ def init_services_middleware(app: Flask, settings: Settings) -> None:
     def inject_services() -> None:
         """Inject services into Flask's g object."""
         g.db_session = Session(engine)
-        g.weather_service = WeatherService(settings, g.db_session)
+        g.repository = Repository(g.db_session)
+        g.weather_service = WeatherService(settings, g.repository)
 
     @app.teardown_request
     def cleanup_session(exception: BaseException | None = None) -> None:
