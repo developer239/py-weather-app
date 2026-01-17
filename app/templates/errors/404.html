@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block title %}Page Not Found{% endblock %}
+
+{% block content %}
+<article>
+    <header>404 - Page Not Found</header>
+    <p>The page you are looking for does not exist.</p>
+    <footer><a href="{{ url_for('weather.index') }}">Back to Home</a></footer>
+</article>
+{% endblock %}

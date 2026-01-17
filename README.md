@@ -70,19 +70,33 @@ uv run pytest              # Run tests
 czech-weather/
 ├── app/
 │   ├── __init__.py           # Flask app factory
-│   ├── routes.py             # Route handlers
+│   ├── config.py             # Pydantic Settings configuration
+│   ├── models.py             # Pydantic models (City, WeatherData)
 │   ├── forms.py              # WTForms definitions
+│   ├── errors.py             # Error handlers (404, 500)
+│   ├── middleware/
+│   │   ├── __init__.py
+│   │   ├── logging.py        # Request logging + request ID
+│   │   ├── security.py       # Security headers (CSP, XSS, etc.)
+│   │   └── services.py       # Dependency injection
+│   ├── routes/
+│   │   ├── __init__.py
+│   │   ├── health.py         # Health check endpoints (/health, /ready)
+│   │   └── weather.py        # Weather routes
 │   ├── services/
-│   │   └── weather_api.py    # Open-Meteo API client
+│   │   └── weather.py        # Open-Meteo API client
 │   ├── static/
 │   │   └── css/
-│   │       └── style.css     # Custom styles
+│   │       └── style.css
 │   └── templates/
-│       ├── base.html         # Base template
-│       ├── index.html        # Main page
+│       ├── base.html
+│       ├── index.html
+│       ├── errors/
+│       │   ├── 404.html
+│       │   └── 500.html
 │       └── macros/
-│           ├── forms.html    # Form components
-│           └── weather.html  # Weather display components
+│           ├── forms.html
+│           └── weather.html
 ├── .env.example
 ├── .gitignore
 ├── pyproject.toml
@@ -91,39 +105,41 @@ czech-weather/
 
 ## API Endpoints
 
-| Method | Endpoint      | Description                    |
-|--------|---------------|--------------------------------|
-| GET    | `/`           | Main page with city selector   |
-| GET    | `/api/cities` | JSON list of available cities  |
+| Method | Endpoint      | Description                     |
+|--------|---------------|---------------------------------|
+| GET    | `/`           | Main page with city selector    |
+| GET    | `/api/cities` | JSON list of available cities   |
 | POST   | `/weather`    | Fetch weather for selected city |
+| GET    | `/health`     | Liveness probe (Kubernetes)     |
+| GET    | `/ready`      | Readiness probe (Kubernetes)    |
 
 ## Environment Variables
 
-| Variable          | Default                          | Description            |
-|-------------------|----------------------------------|------------------------|
-| `FLASK_APP`       | `app`                            | Flask application      |
-| `FLASK_ENV`       | `development`                    | Environment mode       |
-| `SECRET_KEY`      | -                                | Flask secret key       |
-| `WEATHER_API_URL` | `https://api.open-meteo.com/v1`  | Open-Meteo API base URL |
+| Variable              | Default                         | Description             |
+|-----------------------|---------------------------------|-------------------------|
+| `SECRET_KEY`          | `dev-secret-key...`             | Flask secret key        |
+| `DEBUG`               | `false`                         | Debug mode              |
+| `WEATHER_API_URL`     | `https://api.open-meteo.com/v1` | Open-Meteo API base URL |
+| `WEATHER_API_TIMEOUT` | `10`                            | API request timeout     |
 
 ## Dependencies
 
-| Package       | Purpose              |
-|---------------|----------------------|
-| flask         | Web framework        |
-| flask-wtf     | Form handling        |
-| python-dotenv | Environment config   |
-| requests      | HTTP client          |
+| Package          | Purpose                    |
+|------------------|----------------------------|
+| flask            | Web framework              |
+| flask-wtf        | Form handling              |
+| httpx            | HTTP client                |
+| pydantic-settings| Configuration management   |
+| python-dotenv    | Environment file loading   |
 
 ### Dev Dependencies
 
-| Package        | Purpose         |
-|----------------|-----------------|
-| ruff           | Linter/formatter |
-| mypy           | Type checking   |
-| pytest         | Testing         |
-| types-requests | Type stubs      |
-| types-wtforms  | Type stubs      |
+| Package       | Purpose          |
+|---------------|------------------|
+| ruff          | Linter/formatter |
+| mypy          | Type checking    |
+| pytest        | Testing          |
+| types-wtforms | Type stubs       |
 
 ## Tech Stack
 
