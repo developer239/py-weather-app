@@ -37,7 +37,7 @@ def check_database_connection() -> None:
 def app_url() -> Generator[str, None, None]:
     """
     Get app URL - either from environment or start local server.
-    
+
     For CI: Set APP_URL env var to test against running container.
     For local: Starts Flask dev server automatically.
     """

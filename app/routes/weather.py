@@ -21,12 +21,14 @@ def api_cities() -> Response:
     """Return JSON list of available Czech cities."""
     repository: Repository = g.repository
     cities = repository.get_all_cities()
-    return jsonify({
-        "cities": [
-            {"name": c.name, "latitude": c.latitude, "longitude": c.longitude}
-            for c in cities
-        ]
-    })
+    return jsonify(
+        {
+            "cities": [
+                {"name": c.name, "latitude": c.latitude, "longitude": c.longitude}
+                for c in cities
+            ]
+        }
+    )
 
 
 @bp.route("/weather", methods=["POST"])
