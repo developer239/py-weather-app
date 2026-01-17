@@ -1,13 +1,13 @@
 /* Minimal overrides for Pico CSS */
 
 .container {
-    max-width: 600px;
+  max-width: 600px;
 }
 
 article h2 {
-    margin-bottom: 0;
+  margin-bottom: 0;
 }
 
 footer {
-    margin-top: 3rem;
+  margin-top: 3rem;
 }

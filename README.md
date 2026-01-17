@@ -1,6 +1,6 @@
 # Czech Weather
 
-Flask web application displaying current weather for cities in the Czech Republic using the Open-Meteo API.
+Flask web application that displays current weather for cities in the Czech Republic using the Open-Meteo API.
 
 ## Quick Start
 
@@ -48,11 +48,20 @@ Application available at **http://localhost:5000**
 
 ## Commands
 
+### Application
+
 ```bash
-uv sync              # Install dependencies
 uv run flask run     # Start development server
-uv add <package>     # Add new dependency
-uv remove <package>  # Remove dependency
+```
+
+### Code Quality
+
+```bash
+uv run ruff check .        # Lint
+uv run ruff check . --fix  # Lint and auto-fix
+uv run ruff format .       # Format
+uv run mypy app            # Type check
+uv run pytest              # Run tests
 ```
 
 ## Project Structure
@@ -105,6 +114,16 @@ czech-weather/
 | flask-wtf     | Form handling        |
 | python-dotenv | Environment config   |
 | requests      | HTTP client          |
+
+### Dev Dependencies
+
+| Package        | Purpose         |
+|----------------|-----------------|
+| ruff           | Linter/formatter |
+| mypy           | Type checking   |
+| pytest         | Testing         |
+| types-requests | Type stubs      |
+| types-wtforms  | Type stubs      |
 
 ## Tech Stack
 

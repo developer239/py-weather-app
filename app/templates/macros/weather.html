@@ -1,11 +1,11 @@
 {% macro weather_card(weather, city) %}
 <article>
-    <header>{{ city.name }}</header>
-    <h2>{{ weather.temperature }}°C</h2>
-    <p>{{ weather.description }}</p>
-    <footer>
-        Wind: {{ weather.windspeed }} km/h {{ weather.wind_direction_text }} |
-        Updated: {{ weather.time | replace('T', ' ') }}
-    </footer>
+  <header>{{ city.name }}</header>
+  <h2>{{ weather.temperature }}°C</h2>
+  <p>{{ weather.description }}</p>
+  <footer>
+    Wind: {{ weather.windspeed }} km/h {{ weather.wind_direction_text }} |
+    Updated: {{ weather.time | replace('T', ' ') }}
+  </footer>
 </article>
 {% endmacro %}
