@@ -1,6 +1,6 @@
 # Czech Weather
 
-Flask web application that displays current weather for cities in the Czech Republic using the Open-Meteo API.
+Flask web application displaying current weather for cities in the Czech Republic using the Open-Meteo API.
 
 ## Quick Start
 

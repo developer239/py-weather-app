@@ -1,36 +1,11 @@
 {% macro weather_card(weather, city) %}
-<article class="weather-card">
-    <div class="weather-city">{{ city.name }}</div>
-    
-    <div class="weather-icon">{{ weather.icon }}</div>
-    
-    <div class="weather-temperature">{{ weather.temperature }}°C</div>
-    
-    <div class="weather-description">{{ weather.description }}</div>
-    
-    <div class="weather-details">
-        <div class="weather-detail">
-            <span class="weather-detail-label">Wind Speed</span>
-            <span class="weather-detail-value">{{ weather.windspeed }} km/h</span>
-        </div>
-        
-        <div class="weather-detail">
-            <span class="weather-detail-label">Wind Direction</span>
-            <span class="weather-detail-value">{{ weather.wind_direction_text }} ({{ weather.winddirection }}°)</span>
-        </div>
-        
-        <div class="weather-detail">
-            <span class="weather-detail-label">Updated</span>
-            <span class="weather-detail-value">{{ weather.time | replace('T', ' ') }}</span>
-        </div>
-    </div>
-</article>
-{% endmacro %}
-
-
-{% macro no_weather_placeholder() %}
-<article class="weather-card">
-    <div class="weather-icon">🌤️</div>
-    <p>Select a city above to see the current weather conditions.</p>
+<article>
+    <header>{{ city.name }}</header>
+    <h2>{{ weather.temperature }}°C</h2>
+    <p>{{ weather.description }}</p>
+    <footer>
+        Wind: {{ weather.windspeed }} km/h {{ weather.wind_direction_text }} |
+        Updated: {{ weather.time | replace('T', ' ') }}
+    </footer>
 </article>
 {% endmacro %}

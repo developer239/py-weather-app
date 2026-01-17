@@ -1,16 +1,12 @@
 {% extends "base.html" %}
 
 {% from "macros/forms.html" import city_select_form %}
-{% from "macros/weather.html" import weather_card, no_weather_placeholder %}
-
-{% block title %}Czech Weather - Current Conditions{% endblock %}
+{% from "macros/weather.html" import weather_card %}
 
 {% block content %}
     {{ city_select_form(form) }}
     
     {% if weather and selected_city %}
         {{ weather_card(weather, selected_city) }}
-    {% else %}
-        {{ no_weather_placeholder() }}
     {% endif %}
 {% endblock %}
