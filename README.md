@@ -4,97 +4,74 @@ Flask web application that displays current weather for cities in the Czech Repu
 
 ## Quick Start
 
-### 1. Install uv
+```bash
+docker compose up --build
+```
 
-**macOS/Linux:**
+Application available at **http://localhost:8000**
+
+This will:
+- Build the application image
+- Start PostgreSQL database
+- Run migrations and seed data
+- Start the application with Gunicorn
+
+### Stop
 
 ```bash
+docker compose down      # Stop containers
+docker compose down -v   # Stop and remove database volume
+```
+
+---
+
+## Local Development
+
+### Prerequisites
+
+Install [uv](https://docs.astral.sh/uv/):
+
+```bash
+# macOS/Linux
 curl -LsSf https://astral.sh/uv/install.sh | sh
-```
 
-**Windows (PowerShell):**
-
-```powershell
-powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
-```
-
-**Homebrew (macOS):**
-
-```bash
+# Homebrew
 brew install uv
 ```
 
-After installation, restart your terminal or source your shell config.
-
-### 2. Install Dependencies
+### Setup
 
 ```bash
-uv sync
+uv sync                           # Install dependencies
+cp .env.example .env              # Configure environment
+docker compose up -d database     # Start PostgreSQL only
+uv run alembic upgrade head       # Run migrations
+uv run python -m scripts.seed     # Seed database
+uv run flask run                  # Start dev server
 ```
 
-### 3. Configure Environment
+### Commands
 
 ```bash
-cp .env.example .env
-```
+# Application
+uv run flask run                  # Start development server
 
-### 4. Start Database
-
-```bash
-docker compose up -d
-```
-
-### 5. Run Migrations & Seed Data
-
-```bash
-uv run alembic upgrade head
-uv run python -m scripts.seed
-```
-
-### 6. Run the Application
-
-```bash
-uv run flask run
-```
-
-Application available at **http://localhost:5000**
-
-## Commands
-
-### Application
-
-```bash
-uv run flask run     # Start development server
-```
-
-### Database
-
-```bash
-docker compose up -d              # Start PostgreSQL
-docker compose down               # Stop PostgreSQL
-docker compose down -v            # Stop and remove volumes
+# Database
 uv run alembic upgrade head       # Run migrations
 uv run alembic downgrade -1       # Rollback last migration
 uv run alembic history            # Show migration history
 uv run python -m scripts.seed     # Seed database
-```
 
-### Code Quality
+# Code Quality
+uv run ruff check .               # Lint
+uv run ruff check . --fix         # Lint and auto-fix
+uv run ruff format .              # Format
+uv run mypy app                   # Type check
 
-```bash
-uv run ruff check .        # Lint
-uv run ruff check . --fix  # Lint and auto-fix
-uv run ruff format .       # Format
-uv run mypy app            # Type check
-```
-
-### Testing
-
-```bash
+# Testing
 uv run playwright install chromium  # First time only
 uv run pytest                       # Run all tests (headless)
 uv run pytest --headed              # Run with visible browser
-uv run pytest -v                    # Verbose output
 ```
 
 ## Project Structure
@@ -147,10 +124,12 @@ czech-weather/
 ├── tests/
 │   ├── conftest.py           # Pytest fixtures
 │   └── test_e2e.py           # End-to-end tests
+├── .dockerignore
 ├── .env.example
 ├── .gitignore
 ├── alembic.ini
 ├── compose.yml
+├── Dockerfile
 ├── pyproject.toml
 └── README.md
 ```
@@ -185,6 +164,7 @@ czech-weather/
 |-------------------|-----------------------------|
 | flask             | Web framework               |
 | flask-wtf         | Form handling               |
+| gunicorn          | Production WSGI server      |
 | httpx             | HTTP client                 |
 | pydantic-settings | Configuration management    |
 | python-dotenv     | Environment file loading    |

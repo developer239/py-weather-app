@@ -13,3 +13,29 @@ services:
       interval: 5s
     ports:
       - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  app:
+    build: .
+    container_name: czech-weather-app
+    environment:
+      - SECRET_KEY=dev-secret-key-change-in-production
+      - DEBUG=false
+      - PGHOST=database
+      - PGPORT=5432
+      - PGUSER=postgres
+      - PGPASSWORD=postgres
+      - PGDATABASE=czech_weather
+    ports:
+      - "8000:8000"
+    depends_on:
+      database:
+        condition: service_healthy
+    command: >
+      sh -c "alembic upgrade head &&
+             python -m scripts.seed &&
+             gunicorn --bind 0.0.0.0:8000 'app:create_app()'"
+
+volumes:
+  db_data:

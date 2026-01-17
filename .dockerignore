@@ -1,0 +1,32 @@
+# Virtual environment
+.venv/
+
+# Cache
+__pycache__/
+*.pyc
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+
+# IDE
+.idea/
+.vscode/
+
+# Git
+.git/
+.gitignore
+
+# Environment
+.env
+
+# Tests (not needed in production)
+tests/
+
+# Documentation
+README.md
+SPEC.md
+
+# Docker
+Dockerfile
+.dockerignore
+compose.yml
