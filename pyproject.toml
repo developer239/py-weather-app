@@ -19,6 +19,7 @@ dependencies = [
 dev = [
     "mypy>=1.19.1",
     "pytest>=9.0.2",
+    "pytest-playwright>=0.7.2",
     "ruff>=0.14.13",
     "types-wtforms>=3.2.1",
 ]

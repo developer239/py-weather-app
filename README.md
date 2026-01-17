@@ -86,7 +86,15 @@ uv run ruff check .        # Lint
 uv run ruff check . --fix  # Lint and auto-fix
 uv run ruff format .       # Format
 uv run mypy app            # Type check
-uv run pytest              # Run tests
+```
+
+### Testing
+
+```bash
+uv run playwright install chromium  # First time only
+uv run pytest                       # Run all tests (headless)
+uv run pytest --headed              # Run with visible browser
+uv run pytest -v                    # Verbose output
 ```
 
 ## Project Structure
@@ -136,6 +144,9 @@ czech-weather/
 │       └── 001_initial_schema.py
 ├── scripts/
 │   └── seed.py               # Database seeding script
+├── tests/
+│   ├── conftest.py           # Pytest fixtures
+│   └── test_e2e.py           # End-to-end tests
 ├── .env.example
 ├── .gitignore
 ├── alembic.ini
@@ -183,12 +194,13 @@ czech-weather/
 
 ### Dev Dependencies
 
-| Package       | Purpose          |
-|---------------|------------------|
-| ruff          | Linter/formatter |
-| mypy          | Type checking    |
-| pytest        | Testing          |
-| types-wtforms | Type stubs       |
+| Package           | Purpose              |
+|-------------------|----------------------|
+| ruff              | Linter/formatter     |
+| mypy              | Type checking        |
+| pytest            | Testing              |
+| pytest-playwright | E2E browser testing  |
+| types-wtforms     | Type stubs           |
 
 ## Tech Stack
 
@@ -197,4 +209,5 @@ czech-weather/
 - **ORM:** SQLModel
 - **Frontend:** [Pico CSS v2](https://picocss.com/)
 - **API:** [Open-Meteo](https://open-meteo.com/) (free, no API key)
+- **Testing:** Pytest + Playwright
 - **Package Manager:** [uv](https://docs.astral.sh/uv/)
