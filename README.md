@@ -1,47 +1,64 @@
-# Czech Weather App
+# Czech Weather
 
-A simple Flask web application that displays weather information for cities in the Czech Republic using the Open-Meteo API.
-
-## Features
-
-- 🏙️ Select from 10 Czech cities
-- 🌡️ Current temperature display
-- 💨 Wind speed and direction
-- 🎨 Clean, responsive UI with Pico CSS v2
-- ✅ Server-side form validation
-
-## Tech Stack
-
-- **Backend**: Python 3.11+ / Flask
-- **Frontend**: Pico CSS v2
-- **API**: Open-Meteo (free, no API key required)
-- **Package Manager**: uv
+Flask web application that displays current weather for cities in the Czech Republic using the Open-Meteo API.
 
 ## Quick Start
 
-### 1. Install dependencies
+### 1. Install uv
+
+**macOS/Linux:**
+
+```bash
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+
+**Windows (PowerShell):**
+
+```powershell
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+```
+
+**Homebrew (macOS):**
+
+```bash
+brew install uv
+```
+
+After installation, restart your terminal or source your shell config.
+
+### 2. Install Dependencies
 
 ```bash
 uv sync
 ```
 
-### 2. Set up environment
+### 3. Configure Environment
 
 ```bash
 cp .env.example .env
 ```
 
-### 3. Run the application
+### 4. Run the Application
 
 ```bash
 uv run flask run
 ```
 
-The app will be available at `http://localhost:5000`
+Application available at **http://localhost:5000**
+
+## Commands
+
+```bash
+uv sync              # Install dependencies
+uv run flask run     # Start development server
+uv add <package>     # Add new dependency
+uv remove <package>  # Remove dependency
+```
 
 ## Project Structure
 
 ```
+czech-weather/
 ├── app/
 │   ├── __init__.py           # Flask app factory
 │   ├── routes.py             # Route handlers
@@ -57,7 +74,7 @@ The app will be available at `http://localhost:5000`
 │       └── macros/
 │           ├── forms.html    # Form components
 │           └── weather.html  # Weather display components
-├── .env.example              # Environment template
+├── .env.example
 ├── .gitignore
 ├── pyproject.toml
 └── README.md
@@ -65,21 +82,33 @@ The app will be available at `http://localhost:5000`
 
 ## API Endpoints
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/` | Main page with city selector |
-| GET | `/api/cities` | JSON list of available cities |
-| POST | `/weather` | Fetch weather for selected city |
+| Method | Endpoint      | Description                    |
+|--------|---------------|--------------------------------|
+| GET    | `/`           | Main page with city selector   |
+| GET    | `/api/cities` | JSON list of available cities  |
+| POST   | `/weather`    | Fetch weather for selected city |
 
 ## Environment Variables
 
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `FLASK_APP` | Flask application module | `app` |
-| `FLASK_ENV` | Environment (development/production) | `development` |
-| `SECRET_KEY` | Flask secret key | - |
-| `WEATHER_API_URL` | Open-Meteo API base URL | `https://api.open-meteo.com/v1` |
+| Variable          | Default                          | Description            |
+|-------------------|----------------------------------|------------------------|
+| `FLASK_APP`       | `app`                            | Flask application      |
+| `FLASK_ENV`       | `development`                    | Environment mode       |
+| `SECRET_KEY`      | -                                | Flask secret key       |
+| `WEATHER_API_URL` | `https://api.open-meteo.com/v1`  | Open-Meteo API base URL |
 
-## License
+## Dependencies
 
-MIT
+| Package       | Purpose              |
+|---------------|----------------------|
+| flask         | Web framework        |
+| flask-wtf     | Form handling        |
+| python-dotenv | Environment config   |
+| requests      | HTTP client          |
+
+## Tech Stack
+
+- **Backend:** Python 3.11+ / Flask
+- **Frontend:** [Pico CSS v2](https://picocss.com/)
+- **API:** [Open-Meteo](https://open-meteo.com/) (free, no API key)
+- **Package Manager:** [uv](https://docs.astral.sh/uv/)
