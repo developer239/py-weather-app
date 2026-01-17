@@ -8,10 +8,11 @@ import requests
 
 class WeatherAPIError(Exception):
     """Raised when the weather API request fails."""
+
     pass
 
 
-WEATHER_CODES = {
+WEATHER_CODES: dict[int, str] = {
     0: "Clear sky",
     1: "Mainly clear",
     2: "Partly cloudy",
@@ -41,17 +42,18 @@ WEATHER_CODES = {
 @dataclass
 class WeatherData:
     """Weather data container."""
+
     temperature: float
     windspeed: float
     winddirection: int
     weathercode: int
     time: str
-    
+
     @property
     def description(self) -> str:
         """Get human-readable weather description."""
         return WEATHER_CODES.get(self.weathercode, "Unknown")
-    
+
     @property
     def wind_direction_text(self) -> str:
         """Convert wind direction degrees to cardinal direction."""
@@ -62,43 +64,40 @@ class WeatherData:
 
 class WeatherService:
     """Service for fetching weather data from Open-Meteo API."""
-    
-    def __init__(self):
-        self.base_url = os.getenv(
-            "WEATHER_API_URL", 
-            "https://api.open-meteo.com/v1"
-        )
-    
+
+    def __init__(self) -> None:
+        self.base_url = os.getenv("WEATHER_API_URL", "https://api.open-meteo.com/v1")
+
     def get_current_weather(self, latitude: float, longitude: float) -> WeatherData:
         """
         Fetch current weather for given coordinates.
-        
+
         Args:
             latitude: Location latitude
             longitude: Location longitude
-            
+
         Returns:
             WeatherData object with current conditions
-            
+
         Raises:
             WeatherAPIError: If the API request fails
         """
         url = f"{self.base_url}/forecast"
-        params = {
+        params: dict[str, str | float] = {
             "latitude": latitude,
             "longitude": longitude,
             "current_weather": "true",
         }
-        
+
         try:
             response = requests.get(url, params=params, timeout=10)
             response.raise_for_status()
             data = response.json()
-            
+
             current = data.get("current_weather")
             if not current:
                 raise WeatherAPIError("No current weather data in response")
-            
+
             return WeatherData(
                 temperature=current["temperature"],
                 windspeed=current["windspeed"],
@@ -106,7 +105,7 @@ class WeatherService:
                 weathercode=current["weathercode"],
                 time=current["time"],
             )
-            
+
         except requests.RequestException as e:
             raise WeatherAPIError(f"API request failed: {e}") from e
         except (KeyError, ValueError) as e:
