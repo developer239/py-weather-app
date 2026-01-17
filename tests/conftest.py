@@ -21,7 +21,7 @@ def check_database_connection() -> None:
         engine = get_engine(settings)
         with Session(engine) as session:
             session.exec(text("SELECT 1"))  # type: ignore[call-overload]
-    except Exception as e:
+    except Exception:
         pytest.exit(
             f"\n\nDatabase connection failed!\n"
             f"   Host: {settings.pghost}:{settings.pgport}\n"
