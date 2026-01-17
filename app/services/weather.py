@@ -1,9 +1,10 @@
 """Open-Meteo API client for weather data."""
 
 import httpx
+from sqlmodel import Session, select
 
 from app.config import Settings
-from app.models import WeatherData
+from app.models import WeatherCode, WeatherData
 
 
 class WeatherAPIError(Exception):
@@ -15,9 +16,17 @@ class WeatherAPIError(Exception):
 class WeatherService:
     """Service for fetching weather data from Open-Meteo API."""
 
-    def __init__(self, settings: Settings) -> None:
+    def __init__(self, settings: Settings, session: Session) -> None:
         self.base_url = settings.weather_api_url
         self.timeout = settings.weather_api_timeout
+        self.session = session
+
+    def _get_weather_description(self, code: int) -> str:
+        """Look up weather code description from database."""
+        weather_code = self.session.exec(
+            select(WeatherCode).where(WeatherCode.code == code)
+        ).first()
+        return weather_code.description if weather_code else "Unknown"
 
     def get_current_weather(self, latitude: float, longitude: float) -> WeatherData:
         """
@@ -50,12 +59,15 @@ class WeatherService:
             if not current:
                 raise WeatherAPIError("No current weather data in response")
 
+            weathercode = current["weathercode"]
+
             return WeatherData(
                 temperature=current["temperature"],
                 windspeed=current["windspeed"],
                 winddirection=current["winddirection"],
-                weathercode=current["weathercode"],
+                weathercode=weathercode,
                 time=current["time"],
+                description=self._get_weather_description(weathercode),
             )
 
         except httpx.HTTPStatusError as e:

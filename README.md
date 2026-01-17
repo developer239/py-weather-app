@@ -38,7 +38,20 @@ uv sync
 cp .env.example .env
 ```
 
-### 4. Run the Application
+### 4. Start Database
+
+```bash
+docker compose up -d
+```
+
+### 5. Run Migrations & Seed Data
+
+```bash
+uv run alembic upgrade head
+uv run python -m scripts.seed
+```
+
+### 6. Run the Application
 
 ```bash
 uv run flask run
@@ -52,6 +65,18 @@ Application available at **http://localhost:5000**
 
 ```bash
 uv run flask run     # Start development server
+```
+
+### Database
+
+```bash
+docker compose up -d              # Start PostgreSQL
+docker compose down               # Stop PostgreSQL
+docker compose down -v            # Stop and remove volumes
+uv run alembic upgrade head       # Run migrations
+uv run alembic downgrade -1       # Rollback last migration
+uv run alembic history            # Show migration history
+uv run python -m scripts.seed     # Seed database
 ```
 
 ### Code Quality
@@ -71,19 +96,26 @@ czech-weather/
 ├── app/
 │   ├── __init__.py           # Flask app factory
 │   ├── config.py             # Pydantic Settings configuration
-│   ├── models.py             # Pydantic models (City, WeatherData)
+│   ├── database.py           # SQLModel engine and session
 │   ├── forms.py              # WTForms definitions
 │   ├── errors.py             # Error handlers (404, 500)
+│   ├── models/
+│   │   ├── __init__.py
+│   │   ├── city.py           # City SQLModel
+│   │   ├── weather_code.py   # WeatherCode SQLModel
+│   │   └── weather_data.py   # WeatherData Pydantic model
 │   ├── middleware/
 │   │   ├── __init__.py
 │   │   ├── logging.py        # Request logging + request ID
 │   │   ├── security.py       # Security headers (CSP, XSS, etc.)
-│   │   └── services.py       # Dependency injection
+│   │   ├── services.py       # Dependency injection
+│   │   └── validation.py     # Form validation decorator
 │   ├── routes/
 │   │   ├── __init__.py
 │   │   ├── health.py         # Health check endpoints (/health, /ready)
 │   │   └── weather.py        # Weather routes
 │   ├── services/
+│   │   ├── __init__.py
 │   │   └── weather.py        # Open-Meteo API client
 │   ├── static/
 │   │   └── css/
@@ -97,8 +129,17 @@ czech-weather/
 │       └── macros/
 │           ├── forms.html
 │           └── weather.html
+├── migrations/
+│   ├── env.py
+│   ├── script.py.mako
+│   └── versions/
+│       └── 001_initial_schema.py
+├── scripts/
+│   └── seed.py               # Database seeding script
 ├── .env.example
 ├── .gitignore
+├── alembic.ini
+├── compose.yml
 ├── pyproject.toml
 └── README.md
 ```
@@ -121,16 +162,24 @@ czech-weather/
 | `DEBUG`               | `false`                         | Debug mode              |
 | `WEATHER_API_URL`     | `https://api.open-meteo.com/v1` | Open-Meteo API base URL |
 | `WEATHER_API_TIMEOUT` | `10`                            | API request timeout     |
+| `PGHOST`              | `localhost`                     | PostgreSQL host         |
+| `PGPORT`              | `5432`                          | PostgreSQL port         |
+| `PGUSER`              | `postgres`                      | PostgreSQL user         |
+| `PGPASSWORD`          | `postgres`                      | PostgreSQL password     |
+| `PGDATABASE`          | `czech_weather`                 | PostgreSQL database     |
 
 ## Dependencies
 
-| Package          | Purpose                    |
-|------------------|----------------------------|
-| flask            | Web framework              |
-| flask-wtf        | Form handling              |
-| httpx            | HTTP client                |
-| pydantic-settings| Configuration management   |
-| python-dotenv    | Environment file loading   |
+| Package           | Purpose                     |
+|-------------------|-----------------------------|
+| flask             | Web framework               |
+| flask-wtf         | Form handling               |
+| httpx             | HTTP client                 |
+| pydantic-settings | Configuration management    |
+| python-dotenv     | Environment file loading    |
+| sqlmodel          | ORM (SQLAlchemy + Pydantic) |
+| psycopg           | PostgreSQL driver           |
+| alembic           | Database migrations         |
 
 ### Dev Dependencies
 
@@ -144,6 +193,8 @@ czech-weather/
 ## Tech Stack
 
 - **Backend:** Python 3.11+ / Flask
+- **Database:** PostgreSQL 17
+- **ORM:** SQLModel
 - **Frontend:** [Pico CSS v2](https://picocss.com/)
 - **API:** [Open-Meteo](https://open-meteo.com/) (free, no API key)
 - **Package Manager:** [uv](https://docs.astral.sh/uv/)

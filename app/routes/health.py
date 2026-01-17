@@ -1,6 +1,7 @@
 """Health check endpoints for Kubernetes probes."""
 
-from flask import Blueprint, Response
+from flask import Blueprint, Response, g
+from sqlmodel import Session, text
 
 bp = Blueprint("health", __name__)
 
@@ -14,5 +15,9 @@ def health() -> Response:
 @bp.route("/ready")
 def ready() -> Response:
     """Readiness probe endpoint."""
-    # TODO: Add database connectivity check when DB is added
-    return Response("ok", status=200, mimetype="text/plain")
+    try:
+        session: Session = g.db_session
+        session.exec(text("SELECT 1"))  # type: ignore[call-overload]
+        return Response("ok", status=200, mimetype="text/plain")
+    except Exception:
+        return Response("database unavailable", status=503, mimetype="text/plain")

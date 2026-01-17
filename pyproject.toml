@@ -5,11 +5,14 @@ description = "Flask web app displaying weather for Czech cities"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
+    "alembic>=1.18.1",
     "flask>=3.1.2",
     "flask-wtf>=1.2.2",
     "httpx>=0.28.1",
+    "psycopg[binary]>=3.3.2",
     "pydantic-settings>=2.12.0",
     "python-dotenv>=1.2.1",
+    "sqlmodel>=0.0.31",
 ]
 
 [dependency-groups]
@@ -30,5 +33,15 @@ select = ["E", "F", "I", "UP"]
 strict = true
 
 [[tool.mypy.overrides]]
-module = "flask_wtf"
+module = [
+    "flask_wtf",
+    "sqlmodel",
+    "sqlmodel.*",
+    "sqlalchemy",
+    "sqlalchemy.*",
+]
 ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = ["app.models.city", "app.models.weather_code"]
+disable_error_code = ["misc", "call-arg"]
