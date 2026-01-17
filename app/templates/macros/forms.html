@@ -1,0 +1,12 @@
+{% macro city_select_form(form, button_text="Get Weather") %}
+<form method="POST" action="{{ url_for('main.weather') }}" class="city-form">
+    {{ form.hidden_tag() }}
+    
+    <label for="{{ form.city.id }}">
+        Select a city
+        {{ form.city(class="") }}
+    </label>
+    
+    <button type="submit">{{ button_text }}</button>
+</form>
+{% endmacro %}
