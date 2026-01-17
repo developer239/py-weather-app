@@ -1,8 +1,10 @@
 """Form definitions for the weather application."""
 
+from typing import Any
+
 from flask_wtf import FlaskForm
 from wtforms import SelectField
-from wtforms.validators import DataRequired
+from wtforms.validators import DataRequired, ValidationError
 
 from app.models import CITIES
 
@@ -17,7 +19,7 @@ class CityValidator:
         """Validate that selected city is in the allowed list."""
         valid_names = {city.name for city in CITIES}
         if field.data not in valid_names:
-            raise ValueError(self.message)
+            raise ValidationError(self.message)
 
 
 class CityForm(FlaskForm):  # type: ignore[misc]
@@ -29,5 +31,8 @@ class CityForm(FlaskForm):  # type: ignore[misc]
             DataRequired(message="Please select a city."),
             CityValidator(),
         ],
-        choices=[],  # Populated dynamically in routes
     )
+
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
+        super().__init__(*args, **kwargs)
+        self.city.choices = [(city.name, city.name) for city in CITIES]

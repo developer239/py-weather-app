@@ -3,9 +3,11 @@
 from app.middleware.logging import init_logging_middleware
 from app.middleware.security import init_security_middleware
 from app.middleware.services import init_services_middleware
+from app.middleware.validation import validate_form
 
 __all__ = [
     "init_logging_middleware",
     "init_security_middleware",
     "init_services_middleware",
+    "validate_form",
 ]
